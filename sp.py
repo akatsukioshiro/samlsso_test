@@ -1,4 +1,4 @@
-from flask import Flask, redirect, request, session, url_for
+from flask import Flask, redirect, request, session, url_for, make_response
 from onelogin.saml2.auth import OneLogin_Saml2_Auth
 import os
 import json
@@ -87,27 +87,76 @@ def index():
         not_on_or_after = datetime.strptime(not_on_or_after, "%Y-%m-%dT%H:%M:%SZ").strftime("%d %B %Y %H:%M:%S UTC")
         
         return f"""
-                <html>
+    <html>
     <head>
         <script type="text/javascript">
-            // Reload the page every 2 seconds
-            setTimeout(function() {{
-                window.location.reload(1);
-            }}, 2000);
+            // Function to update the session data asynchronously
+            async function updateSession() {{
+                try {{
+                    // Fetch the session data from the server
+                    const response = await fetch('/session-status');
+                    const data = await response.json();
+
+                    // Update the HTML content with the latest session data
+                    document.getElementById('currentTime').innerHTML = data.current_time;
+                    document.getElementById('authInstant').innerHTML = data.auth_instant;
+                    document.getElementById('notBefore').innerHTML = data.not_before;
+                    document.getElementById('notOnOrAfter').innerHTML = data.not_on_or_after;
+
+                    // If session is no longer valid, redirect to the logout page
+                    if (!data.session_valid) {{
+                        window.location.href = '/logout';
+                    }}
+                }} catch (error) {{
+                    console.error('Error fetching session data:', error);
+                }}
+            }}
+
+            // Call the update function every 2 seconds
+            setInterval(updateSession, 2000);
         </script>
     </head>
     <body>
-            Hello {session['samlUserdata']['name']}!<br>
-            Current Time: {ct}<br>
-            Session started at {auth_instant} and Session is Valid !<br>
-            From: {not_before}<br>
-            To: {not_on_or_after} <br>
-            <a href='/logout'>Logout</a>
+        <p>Hello {session['samlUserdata']['name']}!</p>
+        <p>Current Time: <span id="currentTime">{ct}</span></p>
+        <p>Session started at <span id="authInstant">{auth_instant}</span> and Session is Valid!</p>
+        <p>From: <span id="notBefore">{not_before}</span></p>
+        <p>To: <span id="notOnOrAfter">{not_on_or_after}</span></p>
+        <a href='/logout'>Logout</a>
     </body>
     </html>
-        """
+"""
     else:
         return 'Hello, please <a href="/login">login</a>.'
+
+@app.route('/session-status')
+def session_status():
+    if 'samlUserdata' in session:
+        ct = datetime.utcnow()
+        current_time = ct.strftime("%d %B %Y %H:%M:%S UTC")
+        
+        assertion = session.get('samlAssertion', '')
+        not_before, not_on_or_after = get_saml_times(assertion)
+
+        # Check if the session is still valid
+        session_valid = is_session_valid(not_on_or_after)
+
+        # Parse and format times
+        auth_instant = get_current_time(assertion)
+        auth_instant_formatted = datetime.strptime(auth_instant, "%Y-%m-%dT%H:%M:%SZ").strftime("%d %B %Y %H:%M:%S UTC")
+        not_before_formatted = datetime.strptime(not_before, "%Y-%m-%dT%H:%M:%SZ").strftime("%d %B %Y %H:%M:%S UTC")
+        not_on_or_after_formatted = datetime.strptime(not_on_or_after, "%Y-%m-%dT%H:%M:%SZ").strftime("%d %B %Y %H:%M:%S UTC")
+
+        # Return the data as JSON for the client-side JavaScript
+        return {
+            'current_time': current_time,
+            'auth_instant': auth_instant_formatted,
+            'not_before': not_before_formatted,
+            'not_on_or_after': not_on_or_after_formatted,
+            'session_valid': session_valid
+        }
+    else:
+        return {'error': 'No session found'}, 401
 
 @app.route('/favicon.ico')
 def favicon():
