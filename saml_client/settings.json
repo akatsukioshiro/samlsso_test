@@ -1,0 +1,34 @@
+{
+    "strict": true,
+    "debug": true,
+    "sp": {
+        "entityId": "http://192.168.29.178:5000/metadata/",
+        "assertionConsumerService": {
+            "url": "http://192.168.29.178:5000/saml/acs",
+            "binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+        },
+        "singleLogoutService": {
+            "url": "http://192.168.29.178:5000/logout",
+            "binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+        },
+        "NameIDFormat": "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+    },
+    "idp": {
+        "entityId": "http://192.168.29.178:5001/metadata/",
+        "singleSignOnService": {
+            "url": "http://192.168.29.178:5001/login",
+            "binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+        },
+        "singleLogoutService": {
+            "url": "http://192.168.29.178:5001/logout",
+            "binding": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+        },
+        "x509cert": "-----BEGIN CERTIFICATE-----\nMIIDazCCAlOgAwIBAgIUaAzEXSHwmDwTyMvCDH0DojZ21QgwDQYJKoZIhvcNAQEL\nBQAwRTELMAkGA1UEBhMCQVUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoM\nGEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yNDEwMjQxMDE2MjRaFw0zNDEw\nMjQxMDE2MjRaMEUxCzAJBgNVBAYTAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEw\nHwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEB\nAQUAA4IBDwAwggEKAoIBAQDuKq8cuawPSn/BjpkOu1EovVnFuFEOsm065w++20aZ\nX92Ck3ikVayuvgIt9AXLxtqaEz7jxVG89V+Exfs8FKLpMHmrH/hr+g6j0TdqQf8v\nuG3ELdovcIWDD4hz924qfJ7SG2BW7n1NW5ucAps1o+duygPKs5iSHlDQGXecd7/T\nxkrxImv2BN6OLloRp9BQHNgWML+zqDJBaUUPS8v6Vcd2qjub2xfLIuOoPGc39qr4\nRFH9j5z7SDJSohJRv7iQLyFArUeBmNbPHnnBKvnKPuBzKqAUnFZsRu0+QeQn0847\n4ogEb00f53inal6ycT+prDweq9x+c2jhR2mUhcFVkvSrAgMBAAGjUzBRMB0GA1Ud\nDgQWBBSK0GNfZ7tC3bIxd17lc1S1/7bgoDAfBgNVHSMEGDAWgBSK0GNfZ7tC3bIx\nd17lc1S1/7bgoDAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQAC\nLtkKZxIkBqxVZCUvgzGj8sWVtZEP6iPNRupta63FNZhe3t7IG7HsiR2lBV1Buqok\nV7ZAB+UT/66EQwnp1cYAFuBJyNmmQfMyIOWKZv6YU844PWyDm8kbkorExOr0Z5s9\nG5IYVvM7clyPxfxFPXeJgPBpcPgFkZSmxvDNPCNfxwG6Cu2a/HubzFeT6G30SvLQ\n5BD7oQnRN/C/JNTiBg0ju7SltgAIxec2EB5RVz6QcuA7pLV8/X67YWGbNsErhIHi\nwqN7VswjQJk8ObQxes4j6ckpSPvG3OKwZ4a72omPXbgg3F5afPs8M7uqVYD7E4Az\neSJb2Slx0Kfzyv9rwqYk\n-----END CERTIFICATE-----"
+    },
+    "security": {
+        "wantMessagesSigned": false,
+        "wantAssertionsSigned": false,
+        "requestedAuthnContext": false,
+        "lowerBoundTimeInterval": 60
+    }
+}
